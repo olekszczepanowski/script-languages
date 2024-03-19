@@ -7,7 +7,7 @@ def numberOfRequests(filePath, data):
     for line in f:
         try:
             tmp = line.split(" ")
-            if(tmp[8] == data):
+            if(tmp[-2] == data):
              i+=1
         except:
            errors+=1
