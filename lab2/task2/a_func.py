@@ -1,24 +1,21 @@
 import sys
 
-def numberOfRequests(filePath, data):
-    f = open(filePath,"r", encoding="utf8")
+def numberOfRequests(data):
+    f = sys.stdin
     i = 0
-    errors = 0
     for line in f:
         try:
             tmp = line.split(" ")
             if(tmp[-2] == data):
              i+=1
-        except:
-           errors+=1
-    f.close()
+        except ValueError:
+           pass
     print("Number of requests for "+data+": "+str(i))
-    print("Errors in format: "+str(errors))
 
-
-numberOfRequests("lab2/NASA","200")
-numberOfRequests("lab2/NASA","302")
-numberOfRequests("lab2/NASA","404")
+numberOfRequests(sys.argv[1])
+# numberOfRequests("200")
+# numberOfRequests("lab2/NASA","302")
+# numberOfRequests("lab2/NASA","404")
 
 
 
