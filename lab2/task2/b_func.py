@@ -9,7 +9,7 @@ def sumOfData():
             i+=int(tmp[-1])
         except ValueError:
            pass
-    f.close()
     print("Gigabytes of data: "+str(round((i/(1024**3)),2))+"GB")
 
-sumOfData()
+if __name__ == '__main__':
+    sumOfData()

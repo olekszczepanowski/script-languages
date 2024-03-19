@@ -17,7 +17,6 @@ def graphicDownloads():
                 otherTmp+=1
         except ValueError:
            pass
-    f.close()
     print("Stosunek plików graficznych do innych: "+ str(round(extTmp/otherTmp,3)))
 
 graphicDownloads()

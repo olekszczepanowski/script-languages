@@ -1,5 +1,6 @@
-def printRequests(filePath, data):
-    f = open(filePath,"r", encoding="utf8")
+import sys
+def printRequests(data):
+    f = sys.stdin
     for line in f:
         try:
             tmp = line.split(" ")
@@ -7,7 +8,7 @@ def printRequests(filePath, data):
                 print(line) 
         except ValueError:
            pass
-    f.close()
-
-printRequests("lab2/NASA","404")
+if __name__ == '__main__':
+    arg1 = sys.argv[1]
+    printRequests(arg1)
 

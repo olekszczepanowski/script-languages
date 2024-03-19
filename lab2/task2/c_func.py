@@ -11,7 +11,6 @@ def pathToTheBiggestData():
                 path = tmp[-4]
         except ValueError:
            pass
-    f.close()
     print("Path to file: "+path+" "+str(biggestData)+"B")
-
-pathToTheBiggestData()
+if __name__ == '__main__':
+    pathToTheBiggestData()

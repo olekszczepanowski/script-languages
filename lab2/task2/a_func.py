@@ -12,12 +12,8 @@ def numberOfRequests(data):
            pass
     print("Number of requests for "+data+": "+str(i))
 
-numberOfRequests(sys.argv[1])
-# numberOfRequests("200")
-# numberOfRequests("lab2/NASA","302")
-# numberOfRequests("lab2/NASA","404")
 
+if __name__ == '__main__':
+    arg = sys.argv[1]
+    numberOfRequests(arg)
 
-
-# for line in sys.stdin:
-#     print(line.rstrip())
