@@ -1,14 +1,16 @@
 import sys
+from printHelper import printFunction
 def printRequests(data):
     f = sys.stdin
+    retVal=""
     for line in f:
         try:
             tmp = line.split(" ")
             if(tmp[-2] == data):
-                print(line) 
+                retVal+=line
         except ValueError:
            pass
 if __name__ == '__main__':
     arg1 = sys.argv[1]
-    printRequests(arg1)
+    printFunction(printRequests(arg1))
 

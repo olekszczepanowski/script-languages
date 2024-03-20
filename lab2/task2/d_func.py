@@ -1,5 +1,5 @@
 import sys
-
+from printHelper import printFunction
 def graphicDownloads():
     graphicExtensions = ["jpg","gif","jpeg","xbm"]
     f = sys.stdin
@@ -17,6 +17,7 @@ def graphicDownloads():
                 otherTmp+=1
         except ValueError:
            pass
-    print("Stosunek plików graficznych do innych: "+ str(round(extTmp/otherTmp,3)))
+    return(round(extTmp/otherTmp,3))
 
-graphicDownloads()
+if __name__ == '__main__':
+    printFunction(graphicDownloads())

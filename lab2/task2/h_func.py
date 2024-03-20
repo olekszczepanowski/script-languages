@@ -1,18 +1,17 @@
 import sys
-
-def printRequests():
-    polishDomain = "pl"
+from printHelper import printFunction
+def printRequests(domain):
     f = sys.stdin
+    retVal = ""
     for line in f:
         try:
             lineSplitted = line.split(" ")
-            path = lineSplitted[-4]
-            pathSplitted = path.split(".")
-            extension = pathSplitted[-1]
-            if(extension == polishDomain):
-                print(line)
+            if(lineSplitted[0].endswith(domain)):
+                retVal+=line
         except ValueError:
            pass
+    return retVal
 
 if __name__ == '__main__':
-    printRequests()
+    arg1 = sys.argv[1]
+    printFunction(printRequests(arg1))

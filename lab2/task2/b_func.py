@@ -1,5 +1,5 @@
 import sys
-
+from printHelper import printFunction
 def sumOfData():
     f = sys.stdin
     i = 0
@@ -9,7 +9,7 @@ def sumOfData():
             i+=int(tmp[-1])
         except ValueError:
            pass
-    print("Gigabytes of data: "+str(round((i/(1024**3)),2))+"GB")
+    return(i/(1024**3))
 
 if __name__ == '__main__':
-    sumOfData()
+    printFunction(sumOfData())

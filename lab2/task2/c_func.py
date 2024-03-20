@@ -1,5 +1,5 @@
 import sys
-
+from printHelper import printFunction
 def pathToTheBiggestData():
     f = sys.stdin
     biggestData = 0
@@ -11,6 +11,6 @@ def pathToTheBiggestData():
                 path = tmp[-4]
         except ValueError:
            pass
-    print("Path to file: "+path+" "+str(biggestData)+"B")
+    return path+" "+str(biggestData)
 if __name__ == '__main__':
-    pathToTheBiggestData()
+    printFunction(pathToTheBiggestData())

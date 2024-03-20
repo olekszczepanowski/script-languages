@@ -1,5 +1,5 @@
 import sys
-
+from printHelper import printFunction
 def numberOfRequests(data):
     f = sys.stdin
     i = 0
@@ -10,10 +10,10 @@ def numberOfRequests(data):
              i+=1
         except ValueError:
            pass
-    print("Number of requests for "+data+": "+str(i))
+    return i
 
 
 if __name__ == '__main__':
     arg = sys.argv[1]
-    numberOfRequests(arg)
+    printFunction(numberOfRequests(arg))
 
