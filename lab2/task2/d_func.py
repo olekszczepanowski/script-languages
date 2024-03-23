@@ -17,7 +17,7 @@ def graphicDownloads():
                 otherTmp+=1
         except ValueError:
            pass
-    return(round(extTmp/otherTmp,3))
+    return(extTmp/otherTmp)
 
 if __name__ == '__main__':
     printFunction(graphicDownloads())

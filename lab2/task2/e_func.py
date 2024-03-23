@@ -10,6 +10,7 @@ def printRequests(data):
                 retVal+=line
         except ValueError:
            pass
+    return retVal
 if __name__ == '__main__':
     arg1 = sys.argv[1]
     printFunction(printRequests(arg1))

@@ -1,6 +1,8 @@
 import sys
+from printHelper import printFunction
 def printDays(targetDate):
     f = sys.stdin
+    retVal=""
     for line in f:
         try:
             tmp = line.split(" ")
@@ -10,7 +12,11 @@ def printDays(targetDate):
             daySplitted = day.split('[')
             finalDate = daySplitted[1]
             if(finalDate == targetDate):
-                print(line)
+                retVal+=line
         except ValueError:
            pass
-printDays("01/Jul/1995")
+    return retVal
+
+if __name__ == '__main__':
+    arg1 = (sys.argv[1])
+    printFunction(printDays(arg1))
