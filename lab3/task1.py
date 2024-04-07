@@ -22,6 +22,8 @@ def read_log(f):
     return listOfTuples
 
 def sort_log(logList, sortKey):
+    if (sortKey >= len(logList)):
+        return "Blad rozmiaru"
     sorted_log = sorted(logList, key=lambda x: x[sortKey])
     return sorted_log
 
@@ -29,7 +31,7 @@ def get_entries_by_addr(logList, address):
     entries = [entry for entry in logList if entry[0] == address]
     return entries
 
-def get_failed_reads(logList):
+def get_failed_reads(logList, isMerged):
     list_http4 = []
     list_http5 = []
     for tuple in logList:
@@ -37,7 +39,10 @@ def get_failed_reads(logList):
             list_http4.append(tuple)
         if str(tuple[4])[0] == "5":
             list_http5.append(tuple)
-    return (list_http4+list_http5)
+    
+    if(isMerged):
+        return (list_http4+list_http5)
+    return(list_http4,list_http5)
 
 def get_entries_by_extension(logList, extension):
     entries_with_extension = []
@@ -48,7 +53,7 @@ def get_entries_by_extension(logList, extension):
     return entries_with_extension
 
 def print_entries(logList, n):
-    if n >= len(logList):
+    if (n >= len(logList)):
         return "Blad rozmiaru"
     
     output = []
@@ -57,14 +62,34 @@ def print_entries(logList, n):
     return output
 if __name__ == '__main__':
     lista = read_log(sys.stdin)
-    printList(lista)
-    print("\n")
-    printList(sort_log(lista, 3))
-    print("\n")
-    printList(get_entries_by_addr(lista, "205.189.154.54"))
-    print("\n")
-    printList(get_failed_reads(lista))
-    print("\n")
-    printList(get_entries_by_extension(lista,"jpg"))
-    print("\n")
+    # printList(lista)
+    # print("\n")
+    # printList(sort_log(lista, 3))
+    # print("\n")
+    # printList(sort_log(lista, 5))
+    # print("\n")
+    # printList(sort_log(lista, 100))
+    # print("\n")
+    # printList(sort_log(lista, -1))
+    # printList(get_entries_by_addr(lista, "205.189.154.54"))
+    # print("\n")
+    # printList(get_entries_by_addr(lista, ""))
+    # print("\n")
+    # printList(get_entries_by_addr(lista, "unicomp6.unicomp.net"))
+    # print("\n")
+    # printList(get_failed_reads(lista,True))
+    # print("\n")
+    # printList(get_failed_reads(lista,False))
+    # print("\n")
+    # printList(get_entries_by_extension(lista,"jpg"))
+    # print("\n")
+    # printList(get_entries_by_extension(lista,"gif"))
+    # print("\n")
+    # printList(get_entries_by_extension(lista,""))
+    # print("\n")
     printList(print_entries(lista,3))
+    print("\n")
+    printList(print_entries(lista,-1))
+    print("\n")
+    printList(print_entries(lista,100))
+    print("\n")
