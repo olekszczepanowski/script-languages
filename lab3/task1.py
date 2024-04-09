@@ -31,7 +31,7 @@ def get_entries_by_addr(logList, address):
     entries = [entry for entry in logList if entry[0] == address]
     return entries
 
-def get_failed_reads(logList, isMerged):
+def get_failed_reads(logList, isMerged=False):
     list_http4 = []
     list_http5 = []
     for tuple in logList:
@@ -70,16 +70,16 @@ if __name__ == '__main__':
     # print("\n")
     # printList(sort_log(lista, 100))
     # print("\n")
-    # printList(sort_log(lista, -1))
+    # printList(sort_log(lista, -7))
     # printList(get_entries_by_addr(lista, "205.189.154.54"))
     # print("\n")
     # printList(get_entries_by_addr(lista, ""))
     # print("\n")
     # printList(get_entries_by_addr(lista, "unicomp6.unicomp.net"))
     # print("\n")
-    # printList(get_failed_reads(lista,True))
-    # print("\n")
-    # printList(get_failed_reads(lista,False))
+    printList(get_failed_reads(lista,True))
+    print("\n")
+    printList(get_failed_reads(lista))
     # print("\n")
     # printList(get_entries_by_extension(lista,"jpg"))
     # print("\n")
@@ -87,9 +87,9 @@ if __name__ == '__main__':
     # print("\n")
     # printList(get_entries_by_extension(lista,""))
     # print("\n")
-    printList(print_entries(lista,3))
-    print("\n")
-    printList(print_entries(lista,-1))
-    print("\n")
-    printList(print_entries(lista,100))
-    print("\n")
+    # printList(print_entries(lista,3))
+    # print("\n")
+    # printList(print_entries(lista,-1))
+    # print("\n")
+    # printList(print_entries(lista,100))
+    # print("\n")
