@@ -1,6 +1,5 @@
 import sys
 import os
-import subprocess
 import datetime
 import shutil
 import backupHelpers
@@ -20,8 +19,8 @@ def backup():
 
     try:
         zipFilePath = shutil.make_archive(os.path.join(backupDir, zipFileName[:-4]), "zip", folderPath)  
-    except Exception as e:
-        print(f"Błąd podczas kompresowania katalogu: {e}")
+    except :
+        print("Błąd podczas kompresowania katalogu")
         sys.exit()
     
     if not os.path.isdir(backupDir):
@@ -31,10 +30,13 @@ def backup():
 
     row = [timeStamp, folderPath, zipFileName] 
 
-    
     with open(os.path.join(backupDir, "backups.csv"), "a", newline='') as openedFile:
         writer = csv.writer(openedFile)
         writer.writerow(row)
+
+    
+    shutil.rmtree(folderPath)
+
 if __name__ == '__main__':
    backup()
 

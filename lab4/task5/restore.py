@@ -42,7 +42,6 @@ def restore_backup(selected_backup_index):
     folder_path = selected_backup[1]
 
     try:
-        shutil.rmtree(folder_path)  
         shutil.unpack_archive(zip_file, folder_path)  
         print("Kopia zapasowa została przywrócona pomyślnie.")
     except :

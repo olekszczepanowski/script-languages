@@ -71,7 +71,7 @@ def tail():
         if not isByte:
             while True:
                 try:
-                    file = open(filePath, "r")
+                    file = open(filePath, 'r')
                     newLines = file.readlines()
                     file.close()
                     if len(newLines) > len(lines):
