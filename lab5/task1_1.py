@@ -6,7 +6,6 @@ path = "TEST.log"
 
 def readFile(filePath):
     try:
-        
         file = open(filePath, "r")
         lines = file.readlines()
         logs = {}
@@ -32,8 +31,9 @@ def createDict(line):
     match = re.match(pattern, line)
     if match:
         if match.group(1):
+           tmpDate = datetime.strptime(match.group(1),"%b %d %H:%M:%S").replace(year=2000)
            logDict = {
-               "date": match.group(1),
+               "date": tmpDate,
                "username": match.group(2),
                "appComponent": match.group(3),
                "description": match.group(4)
@@ -55,11 +55,13 @@ def get_user_from_log(logLine):
 def get_message_type(description):
     if re.search(r"Accepted password",description):
         return "udane logowanie"
-    elif re.search(r"Failed password",description):
+    elif re.search(r"authentication failure", description):
         return "nieudane logowanie"
+    elif re.search(r"Failed password for",description):
+        return "bledne haslo"
     elif re.search(r"Connection closed",description):
         return "polaczenie zamkniete"
-    elif re.search(r"Invalid user",description):
+    elif re.search(r"Invalid user|invalid user|user unknown",description):
         return "niewlasciwy uzytkownik"
     elif re.search(r"BREAK-IN",description):
         return "wlamanie"
@@ -67,9 +69,11 @@ def get_message_type(description):
         return "inne"
 
 logs = readFile(path)
-list_ipv4s = get_ipv4s_from_log(logs[2])
-print(list_ipv4s)
+# print(logs)
+# list_ipv4s = get_ipv4s_from_log(logs[2])
+# print(list_ipv4s)
 user = get_user_from_log(logs[4])
 print(user)
-description = get_message_type(logs[1]["description"])
-print(description)
+# description = get_message_type(logs[1]["description"])
+# print(description)
+
