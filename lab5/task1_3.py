@@ -1,7 +1,5 @@
 import random
 import statistics
-import datetime
-import numpy as np
 import copy
 from task1_1 import get_user_from_log, readFile
 
@@ -61,52 +59,50 @@ def getSSHfromUsers(logs):
     return sshConnections
 
 
-def calculateStatisticsForUser(sshConnections):
-    statistics_results = {}
-    for user, connection_times in sshConnections.items():
-        connection_times = sorted(connection_times)
-        if len(connection_times) > 1:
-            durations = [(connection_times[i + 1] - connection_times[i]).total_seconds() for i in range(len(connection_times) - 1)]
-            mean_duration = statistics.mean(durations)
-            stdev_duration = statistics.stdev(durations)
-        else:
-            mean_duration = 0
-            stdev_duration = 0
-        statistics_results[user] = {'mean': mean_duration, 'stdev': stdev_duration}
-    return statistics_results
-
-
-
-def calculateStatistics(sshConnections):
-    statistics_results = {}
+def calculateStatistics(logs, global_=True):
+    statisticsResults = {}
     
-    all_connection_times = []
-    for connection_times in sshConnections.values():
-        connection_times = sorted(connection_times)
-        firstConnection = connection_times[0]
-        lastConnection = connection_times[-1]
-        duration = (lastConnection-firstConnection).total_seconds()
-        all_connection_times.append(duration)
+    if global_:
+        sshConnections = getSSH(logs)
+        allConnectionTimes = []
+        for connectionTimes in sshConnections.values():
+            connectionTimes = sorted(connectionTimes)
+            firstConnection = connectionTimes[0]
+            lastConnection = connectionTimes[-1]
+            duration = (lastConnection-firstConnection).total_seconds()
+            allConnectionTimes.append(duration)
     
-    all_mean = statistics.mean(all_connection_times)
-    all_stdev = statistics.stdev(all_connection_times) if len(all_connection_times) > 1 else 0
+        allMean = statistics.mean(allConnectionTimes)
+        allStdev = statistics.stdev(allConnectionTimes) if len(allConnectionTimes) > 1 else 0
     
-    statistics_results['global'] = {'mean': all_mean, 'stdev': all_stdev}
+        statisticsResults['global'] = {'mean': allMean, 'stdev': allStdev}
 
-    return statistics_results
+        return statisticsResults
+    else:
+        sshConnections = getSSHfromUsers(logs)
+        for user, connectionTimes in sshConnections.items():
+            connectionTimes = sorted(connectionTimes)
+            if len(connectionTimes) > 1:
+                durations = [(connectionTimes[i + 1] - connectionTimes[i]).total_seconds() for i in range(len(connectionTimes) - 1)]
+                meanDuration = statistics.mean(durations)
+                stdevDuration = statistics.stdev(durations)
+            else:
+                meanDuration = 0
+                stdevDuration = 0
+            statisticsResults[user] = {'mean': meanDuration, 'stdev': stdevDuration}
+        
+        return statisticsResults
 
 def getUsersLoggingFrequency(logs):
     users = getUsers(logs)
     mostFrequentUser = max(users, key=lambda user: len(users[user]))
     leastFrequentUser = min(users, key=lambda user: len(users[user]))
-    output = "Most frequent user: "+str(mostFrequentUser)+" value:"+str(len(users[mostFrequentUser]))
-    +"\nLeast frequent user: "+str(leastFrequentUser)+" value:"+str(len(users[leastFrequentUser]))
+    output = "Most frequent user: " + str(mostFrequentUser) + " value: " + str(len(users[mostFrequentUser])) + "\nLeast frequent user: " + str(leastFrequentUser) + " value: " + str(len(users[leastFrequentUser]))
     return output
-logs = readFile(path)
 
 
-sshConnections = getSSHfromUsers(logs)
+# logs = readFile(path)
 
-print(calculateStatisticsForUser(sshConnections))
+# print(calculateStatistics(logs,False))
 
 

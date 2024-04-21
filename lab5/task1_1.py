@@ -31,8 +31,12 @@ def createDict(line):
     match = re.match(pattern, line)
     if match:
         if match.group(1):
-           tmpDate = datetime.strptime(match.group(1),"%b %d %H:%M:%S").replace(year=2000)
-           logDict = {
+            tmpDate = datetime.strptime(match.group(1),"%b %d %H:%M:%S")
+            if tmpDate.month == 1:  
+                tmpDate = tmpDate.replace(year=2024)
+            else:  
+                tmpDate = tmpDate.replace(year=2023)
+            logDict = {
                "date": tmpDate,
                "username": match.group(2),
                "appComponent": match.group(3),
@@ -68,12 +72,27 @@ def get_message_type(description):
     else:
         return "inne"
 
-logs = readFile(path)
-# print(logs)
-# list_ipv4s = get_ipv4s_from_log(logs[2])
-# print(list_ipv4s)
-user = get_user_from_log(logs[4])
-print(user)
+def runGetIpv4FromLog(logs):
+    for log in logs.values():
+        tab = get_ipv4s_from_log(log)
+        if len(tab) > 0:
+            print(tab)
+
+def runGetUserFromLog(logs):
+    for log in logs.values():
+        user = get_user_from_log(log)
+        if user:
+            print(user)
+
+def runGetMessageType(logs):
+    for log in logs.values():
+        print(get_message_type(log["description"]))
+
+# logs = readFile(path)
+# # print(logs)
+# # list_ipv4s = get_ipv4s_from_log(logs[2])
+# # print(list_ipv4s)
+# runGetMessageType(logs)
 # description = get_message_type(logs[1]["description"])
 # print(description)
 

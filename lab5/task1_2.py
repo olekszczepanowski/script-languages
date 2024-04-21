@@ -1,6 +1,6 @@
 import logging
 import sys
-from task1_1 import createDict, get_message_type
+from task1_1 import createDict, get_message_type, get_ipv4s_from_log, get_user_from_log
 
 path = "TEST.log"
 
@@ -37,6 +37,21 @@ def readFile(filePath):
         logger.error("Błąd odczytu pliku z podaną ścieżką: %s", e)
         return None
 
+def runGetIpv4FromLog(logs):
+    for log in logs.values():
+        tab = get_ipv4s_from_log(log)
+        if len(tab) > 0:
+            print(tab)
+
+def runGetUserFromLog(logs):
+    for log in logs.values():
+        user = get_user_from_log(log)
+        if user:
+            print(user)
+
+def runGetMessageType(logs):
+    for log in logs.values():
+        print(get_message_type(log["description"]))
 
 class StdoutFilter(logging.Filter):
     def filter(self, record):
@@ -57,5 +72,21 @@ stderrHandler.setLevel(logging.ERROR)
 stderrHandler.setFormatter(outputFormat)
 logger.addHandler(stderrHandler)
 
+def analyze_logs(args):
+    # Ustawienie poziomu logowania
+    log_level = getattr(logging, args.log_level)
+    logger.setLevel(log_level)
 
-readFile(path)
+    # Odczytanie pliku z logami
+    logs = readFile(args.file)
+
+    if args.subcommand == "ipv4":
+        runGetIpv4FromLog(logs)
+    elif args.subcommand == "user":
+        runGetUserFromLog(logs)
+    elif args.subcommand == "message":
+        runGetMessageType(logs)
+
+
+# logs = readFile(path)
+# runGetIpv4FromLog(logs)
