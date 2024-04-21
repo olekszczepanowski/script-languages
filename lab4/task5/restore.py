@@ -44,6 +44,10 @@ def restore_backup(selected_backup_index):
     try:
         shutil.unpack_archive(zip_file, folder_path)  
         print("Kopia zapasowa została przywrócona pomyślnie.")
+        del backups[selected_backup_index - 1]
+        with open(backup_history_path, "w", newline='') as history_file:
+            writer = csv.writer(history_file)
+            writer.writerows(backups)
     except :
         print("Błąd podczas przywracania kopii zapasowej.")
 

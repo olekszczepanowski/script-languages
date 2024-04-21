@@ -37,6 +37,8 @@ def readFile(filePath):
         logger.error("Błąd odczytu pliku z podaną ścieżką: %s", e)
         return None
 
+
+# funkcje pomocnicze do wykorzystania w zadaniu 1.4
 def runGetIpv4FromLog(logs):
     for log in logs.values():
         tab = get_ipv4s_from_log(log)
@@ -72,12 +74,13 @@ stderrHandler.setLevel(logging.ERROR)
 stderrHandler.setFormatter(outputFormat)
 logger.addHandler(stderrHandler)
 
-def analyze_logs(args):
-    # Ustawienie poziomu logowania
+
+
+def analyzeLogs(args):
+    
     log_level = getattr(logging, args.log_level)
     logger.setLevel(log_level)
 
-    # Odczytanie pliku z logami
     logs = readFile(args.file)
 
     if args.subcommand == "ipv4":

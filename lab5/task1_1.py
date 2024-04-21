@@ -57,7 +57,7 @@ def get_user_from_log(logLine):
      else:
          return None
 def get_message_type(description):
-    if re.search(r"Accepted password",description):
+    if re.search(r"Accepted password for",description):
         return "udane logowanie"
     elif re.search(r"authentication failure", description):
         return "nieudane logowanie"

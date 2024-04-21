@@ -1,6 +1,6 @@
 import argparse
 import task1_1
-from task1_2 import analyze_logs,readFile,runGetIpv4FromLog,runGetMessageType,runGetUserFromLog
+from task1_2 import analyzeLogs,readFile
 from task1_3 import printRandomUserLogs, calculateStatistics, getUsersLoggingFrequency
 
 def main():
@@ -19,28 +19,28 @@ def main():
     randomUser_parser = subparsers.add_parser("rndUser", help="get_random_user_logs. Użycie: rndUser+spacja+n")
     randomUser_parser.add_argument("n", type=int, help="Liczba logów do wyświetlenia")
     
-    calcStatsGlobal_parser = subparsers.add_parser("calcStatsGlobal", help="calculate_statistics_global")
+    calcStatsGlobal_parser = subparsers.add_parser("calcStatsGlobal", help="calculate_statistics_global. Wyniki podane w sekundach.")
     
-    calcStatsUser_parser = subparsers.add_parser("calcStatsForUser", help="calculate_statistic_for_user")
+    calcStatsUser_parser = subparsers.add_parser("calcStatsForUser", help="calculate_statistic_for_user. Wyniki podane w sekundach.")
     
     loggingFrequency_parser = subparsers.add_parser("logFreq", help="get_user_logging_frequency")
 
 
     args = parser.parse_args()
     
-    analyze_logs(args)
+    analyzeLogs(args)
 
     if args.subcommand == "rndUser":
-        printRandomUserLogs(readFile(args.file), 5)
+        printRandomUserLogs(readFile(args.file), args.n)
     elif args.subcommand == "calcStatsGlobal":
-        statistics_results = calculateStatistics(readFile(args.file), global_=True)
-        print(statistics_results)
+        statisticsResults = calculateStatistics(readFile(args.file), global_=True)
+        print(statisticsResults)
     elif args.subcommand == "calcStatsForUser":
-        statistics_results = calculateStatistics(readFile(args.file), global_=False)
-        print(statistics_results)
+        statisticsResults = calculateStatistics(readFile(args.file), global_=False)
+        print(statisticsResults)
     elif args.subcommand == "logFreq":
-        users_frequency = getUsersLoggingFrequency(readFile(args.file))
-        print(users_frequency)
+        usersFrequency = getUsersLoggingFrequency(readFile(args.file))
+        print(usersFrequency)
 
 if __name__ == "__main__":
     main()
