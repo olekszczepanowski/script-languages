@@ -1,7 +1,7 @@
 from functools import lru_cache
 
 from task4 import make_generator, fibonacci, numSequence
-import time
+
 
 
 def make_generator_mem(f):
