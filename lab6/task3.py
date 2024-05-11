@@ -1,15 +1,17 @@
 import re
-from task2 import FailedPassword, AcceptedPassword, Error, Other
-from functionalities import readFile, get_ipv4s_from_log
+from lab6.task2 import FailedPassword, AcceptedPassword, Error, Other
+from lab6.functionalities import readFile, get_ipv4s_from_log
 from ipaddress import IPv4Address
 from datetime import datetime
-from task1 import SSHLogEntry
+from lab6.task1 import SSHLogEntry
+
+
 class SSHLogJournal:
     def __init__(self):
         self.logsList = []
         self.ipDict = {}
         self.dateDict = {}
-    
+
     @staticmethod
     def validateLogType(log):
         if re.search(r"Accepted password for", log):
@@ -20,6 +22,7 @@ class SSHLogJournal:
             return Error(log)
         else:
             return Other(log)
+
     def appendDateDict(self, log):
         if log.date in self.dateDict:
             self.dateDict[log.date].append(log)
@@ -33,6 +36,7 @@ class SSHLogJournal:
                 self.ipDict[ip].append(log)
             else:
                 self.ipDict[ip] = [log]
+
     def appendEntry(self, entry):
         logObject = self.validateLogType(entry)
         if logObject.validate():
@@ -44,10 +48,10 @@ class SSHLogJournal:
             self.logsList = (entryOther)
             self.appendDateDict(entryOther)
             self.appendIpDict(entryOther)
-    
+
     def __len__(self):
         return len(self.logsList)
-    
+
     def __contains__(self, item):
         if not isinstance(item, SSHLogEntry):
             return False
@@ -55,14 +59,14 @@ class SSHLogJournal:
         for log in self.logsList:
             if str(log) == strItem:
                 return True
-            
+
         return False
-    
+
     def __iter__(self):
         return iter(self.logsList)
 
-    def __getattr__(self,key):
-        if isinstance(key,int):
+    def __getattr__(self, key):
+        if isinstance(key, int):
             return self.logsList[key]
         elif isinstance(key, IPv4Address):
             return self.ipDict.get(str(key), None)
@@ -70,47 +74,54 @@ class SSHLogJournal:
             return self.dateDict.get(key, None)
         else:
             raise KeyError("Nieprawidlowy klucz.")
-        
+
     def getLogsWithGivenIp(self, searchedIP):
         strIP = str(searchedIP)
         ipAddress = IPv4Address(strIP)
         return self.__getattr__(ipAddress)
 
-def createLogsList():
+
+def createLogsList(path):
     logJournal = SSHLogJournal()
-    logs = readFile("SSHTEST.log")
+    logs = readFile(path)
     for log in logs:
         logJournal.appendEntry(log)
-    
+
     return logJournal
 
+
+
+
+
 if __name__ == '__main__':
-    logJournal = createLogsList()
-    logs = readFile("SSHTEST.log")
-    ipAddress = IPv4Address('113.118.187.34')
-    otherIpAddress = IPv4Address('183.62.140.253')
-    date = datetime(2023, 12, 10, 11, 40, 46)
-    print("Len test:")
-    print(len(logJournal))  
-    print("Contains test:")
-    print("Test dla obiektu AcceptedPassword: ")
-    firstLine = next(logs)
-    test = AcceptedPassword(firstLine)
-    print(test in logJournal)
-    print("Test dla stringa nieznajdującego się w logJournal:")
-    print("lalalal" in logJournal)
-
-    print("getLogsWithGivenIP: ")
-    logsWithGivenIP = logJournal.getLogsWithGivenIp(ipAddress)
-    print(logsWithGivenIP)
-
-    print("Iterator:")
-    for log in logJournal:  
-        print(log)
-
-    print("__getattr__ dla indexu:")
-    print(logJournal.__getattr__(2))
-    print("__getattr__ dla adresu ip:")
-    print(logJournal.__getattr__(otherIpAddress))  
-    print("__getaddr__ dla daty:")
-    print(logJournal.__getattr__(date))  
+    logJournal = createLogsList("SSHTEST.log")
+    print(logJournal.logsList)
+    print(logJournal.logsList.getRawEntry())
+    # logs = readFile("SSHTEST.log")
+    # ipAddress = IPv4Address('113.118.187.34')
+    # otherIpAddress = IPv4Address('183.62.140.253')
+    # date = datetime(2023, 12, 10, 11, 40, 46)
+    # print("Len test:")
+    # print(len(logJournal))
+    # print("Contains test:")
+    # print("Test dla obiektu AcceptedPassword: ")
+    # firstLine = next(logs)
+    # test = AcceptedPassword(firstLine)
+    # print(test in logJournal)
+    # print("Test dla stringa nieznajdującego się w logJournal:")
+    # print("lalalal" in logJournal)
+    #
+    # print("getLogsWithGivenIP: ")
+    # logsWithGivenIP = logJournal.getLogsWithGivenIp(ipAddress)
+    # print(logsWithGivenIP)
+    #
+    # print("Iterator:")
+    # for log in logJournal:
+    #     print(log)
+    #
+    # print("__getattr__ dla indexu:")
+    # print(logJournal.__getattr__(2))
+    # print("__getattr__ dla adresu ip:")
+    # print(logJournal.__getattr__(otherIpAddress))
+    # print("__getaddr__ dla daty:")
+    # print(logJournal.__getattr__(date))

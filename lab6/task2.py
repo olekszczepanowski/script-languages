@@ -1,7 +1,7 @@
 
 import re
-from task1 import SSHLogEntry
-from functionalities import readFile, get_ipv4s_from_log, get_user_from_log, get_message_type, createLog
+from lab6.task1 import SSHLogEntry
+from lab6.functionalities import readFile, get_ipv4s_from_log, get_user_from_log, get_message_type, createLog
 
 
 class FailedPassword(SSHLogEntry):

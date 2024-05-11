@@ -1,4 +1,4 @@
-from functionalities import createLog, get_ipv4s_from_log
+from lab6.functionalities import createLog, get_ipv4s_from_log
 import ipaddress
 from abc import ABC, abstractmethod
 class SSHLogEntry(ABC):
