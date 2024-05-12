@@ -21,6 +21,14 @@ def createRawEntriesList(list):
 
 def filterLogList(base_list, start_date, end_date):
     filtered_list = []
+    try:
+        start_date = datetime.strptime(start_date, '%Y-%m-%d')
+    except ValueError:
+        raise ValueError('Invalid date format. Usage: (YYYY-MM-DD)')
+    try:
+        end_date = datetime.strptime(end_date, '%Y-%m-%d')
+    except ValueError:
+        raise ValueError('Invalid date format. Usage: (YYYY-MM-DD)')
     for entry in base_list:
         if start_date <= entry.date <= end_date:
             filtered_list.append(entry)
@@ -36,8 +44,8 @@ def changeRawEntry(entry):
 
 logs = createLogList("TEST.log")
 raw_entries = createRawEntriesList(logs)
-print(raw_entries)
+# print(raw_entries)
 date_dec_28 = datetime(year=2023, month=12, day=28, hour=0, minute=0, second=0)
 date_dec_30 = datetime(year=2023, month=12, day=30, hour=23, minute=59, second=59)
-filtered_logs = filterLogList(logs, date_dec_28, date_dec_30)
+filtered_logs = filterLogList(logs, "2023-12-28", "2023-12-30")
 print(filtered_logs)

@@ -37,6 +37,7 @@ class LogBrowser(BoxLayout):
         self.date_from = TextInput(text="date from (YYYY-MM-DD)")
         self.date_to = TextInput(text="date to (YYYY-MM-DD)")
         reset_button = Button(text="Reset")
+        reset_button.bind(on_press=lambda instance: self.load_logs())
         filter_button = Button(text="Filter")
         filter_button.bind(on_press=lambda instance: self.filter_logs())
         date_container.add_widget(self.date_from)
@@ -46,9 +47,9 @@ class LogBrowser(BoxLayout):
 
         self.add_widget(date_container)
 
-        self.logs_scrollview = ScrollView(height="500px")
+        self.logs_scrollview = ScrollView()
         self.logs_scrollview.do_scroll_y = True
-        self.logs_container = BoxLayout(orientation="vertical", size_hint_y=None)  # Set size_hint_y to None
+        self.logs_container = BoxLayout(orientation="vertical", size_hint_y=None)
         self.logs_scrollview.add_widget(self.logs_container)
 
         self.selected_button = None
@@ -56,6 +57,7 @@ class LogBrowser(BoxLayout):
         self.add_widget(self.logs_scrollview)
 
         details_container = GridLayout(cols=2, rows=4, height=250)
+        details_container.padding = [15, 15, 15, 15]
         details_container.add_widget(Label(text='date'))
         self.date = Label(text='None')
         details_container.add_widget(self.date)
@@ -75,28 +77,17 @@ class LogBrowser(BoxLayout):
         self.add_widget(details_container)
 
         nav_container = GridLayout(cols=2)
-        self.next_button = Button(text="Next")
+        nav_container.padding = [15, 15, 15, 15]
+        self.next_button = Button(text="next")
+        self.next_button.disabled = True
         self.next_button.bind(on_press=lambda instance: self.next_log())
         self.prev_button = Button(text="prev")
+        self.prev_button.disabled = True
         self.prev_button.bind(on_press=lambda instance: self.prev_log())
         self.current_log_index = 0
         nav_container.add_widget(self.next_button)
         nav_container.add_widget(self.prev_button)
         self.add_widget(nav_container)
-
-    # def create_logs_buttons(self, path):
-    #     if os.path.exists(path):  # Sprawdzamy, czy ścieżka istnieje
-    #         self.logs = createLogList(path)
-    #         raw_entries = createRawEntriesList(self.logs)
-    #         print(raw_entries)
-    #         for entry in raw_entries:
-    #             button = Button(text=entry, size_hint_y=None, height=40)
-    #             button.bind(on_press=self)
-    #             self.logs_container.add_widget(button)
-    #             self.log_buttons.append(button)
-    #     else:
-    #         popup = Popup(title='Error', content=Label(text='Invalid path'), size_hint=(None, None), size=(400, 200))
-    #         popup.open()
 
     def update_logs_display(self, logs):
         self.logs_container.clear_widgets()
@@ -107,6 +98,18 @@ class LogBrowser(BoxLayout):
 
             self.next_button.disabled = True
             self.prev_button.disabled = True
+
+    def reset_logs(self):
+        path = self.path_input.text
+        try:
+            resetted_logs = createLogList(path)
+            if self.logs != resetted_logs:
+                self.logs = resetted_logs
+                self.update_logs_display(self.logs)
+            else:
+                return None
+        except FileNotFoundError as e:
+            self.show_popup(str(e))
 
     def load_logs(self):
         path = self.path_input.text
@@ -119,16 +122,8 @@ class LogBrowser(BoxLayout):
         except FileNotFoundError as e:
             self.show_popup(str(e))
 
-    def filter_logs(self):
-        try:
-            startDate = self.date_from.text
-            endDate = self.date_to.text
-            self.logs = filterLogList(self.logs, startDate, endDate)
-        except ValueError as e:
-            self.show_popup(str(e))
-
     def show_popup(self, message):
-        popup = Popup(title='Error',
+        popup = Popup(title='Error. Invalid input.',
                       content=Label(text=message),
                       size_hint=(None, None), size=(400, 200))
         popup.open()
@@ -138,10 +133,16 @@ class LogBrowser(BoxLayout):
         self.updateLogDetails(log)
 
     def update_log_details(self, log):
-        self.date.text = str(log.date.date())
-        self.hostname.text = str(log.hostname)
-        self.pid.text = str(log.pidNumber)
-        self.description.text = str(log.description)
+        if log:
+            self.date.text = str(log.date.date())
+            self.hostname.text = str(log.hostname)
+            self.pid.text = str(log.pidNumber)
+            self.description.text = str(log.description)
+        else:
+            self.date.text = 'None'
+            self.hostname.text = 'None'
+            self.pid.text = 'None'
+            self.description.text = 'None'
 
     def create_logs_buttons(self, log_entry, index):
         btn_text = changeRawEntry(log_entry.getRawEntry())
@@ -154,7 +155,7 @@ class LogBrowser(BoxLayout):
         if self.selected_button:
             self.selected_button.background_color = [1, 1, 1, 1]
 
-        instance.background_color = [0.5, 0.5, 1, 1]
+        instance.background_color = [1, 0, 0, 1]
 
         self.selected_button = instance
         self.current_log_index = index
@@ -163,23 +164,44 @@ class LogBrowser(BoxLayout):
         self.prev_button.disabled = self.current_log_index == 0
         self.next_button.disabled = self.current_log_index == len(self.logs) - 1
 
+    def filter_logs(self):
+        try:
+            startDate = self.date_from.text
+            endDate = self.date_to.text
+            self.logs = filterLogList(self.logs, startDate, endDate)
+            self.update_logs_display(self.logs)
+            self.update_nav_buttons_state()
+            if not self.logs:
+                self.date.text = 'None'
+                self.hostname.text = 'None'
+                self.pid.text = 'None'
+                self.description.text = 'None'
+        except ValueError as e:
+            self.show_popup(str(e))
+
     def prev_log(self):
-        if self.current_log_index > 0:
+        if self.current_log_index > 0 and self.logs:
             self.current_log_index -= 1
             selected_button = self.log_buttons[self.current_log_index]
             log_entry = self.logs.logsList[self.current_log_index]
             self.log_button_clicked(selected_button, log_entry, self.current_log_index)
+        self.update_nav_buttons_state()
 
     def next_log(self):
-        if self.current_log_index < len(self.logs) - 1:
+        if self.current_log_index < len(self.logs) - 1 and self.logs:
             self.current_log_index += 1
             selected_button = self.log_buttons[self.current_log_index]
             log_entry = self.logs.logsList[self.current_log_index]
             self.log_button_clicked(selected_button, log_entry, self.current_log_index)
+        self.update_nav_buttons_state()
 
-    def display_logs(self):
-        log = self.logs[self.current_log_index]
-        self.updateLogDetails(log)
+    def update_nav_buttons_state(self):
+        if not self.logs or self.logs == []:
+            self.prev_button.disabled = True
+            self.next_button.disabled = True
+        else:
+            self.prev_button.disabled = self.current_log_index == 0
+            self.next_button.disabled = self.current_log_index == len(self.logs) - 1
 
 
 class MyApp(App):
