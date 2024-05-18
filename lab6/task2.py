@@ -1,45 +1,48 @@
-
 import re
-from lab6.task1 import SSHLogEntry
-from lab6.functionalities import readFile, get_ipv4s_from_log, get_user_from_log, get_message_type, createLog
+from task1 import SSHLogEntry
+from functionalities import readFile
 
 
 class FailedPassword(SSHLogEntry):
-    def __init__(self, log):
+    def __init__(self, log: str):
         super().__init__(log)
 
-    def validate(self):
+    def validate(self) -> bool:
         if re.search(r"Failed password for", self.description):
             return True
         else:
             return False
-        
+
+
 class AcceptedPassword(SSHLogEntry):
-    def __init__(self, log):
+    def __init__(self, log: str):
         super().__init__(log)
 
-    def validate(self):
+    def validate(self) -> bool:
         if re.search(r"Accepted password for", self.description):
             return True
         else:
             return False
-        
+
+
 class Error(SSHLogEntry):
-    def __init__(self, log):
+    def __init__(self, log: str):
         super().__init__(log)
 
-    def validate(self):
+    def validate(self) -> bool:
         if re.search(r"error:", self.description):
             return True
         else:
             return False
-        
+
+
 class Other(SSHLogEntry):
-    def __init__(self, log):
+    def __init__(self, log: str):
         super().__init__(log)
 
-    def validate(self):
+    def validate(self) -> bool:
         return True
+
 
 # logFailedPass = "Dec 31 09:13:16 LabSZ sshd[1761]: Failed password for invalid user app from 95.188.84.199 port 33116 ssh2"
 # logAcceptPass = "Dec 10 16:17:52 LabSZ sshd[15139]: Accepted password for jmzhu from 183.62.156.108 port 18507 ssh2"
@@ -115,14 +118,14 @@ if __name__ == "__main__":
     print("__eq__:")
     print("dla tych samych obiektów")
     mm_entrySHH_accepted = AcceptedPassword(firstLine)
-    print(mm_entrySHH_accepted==mm_entrySHH_accepted)
+    print(mm_entrySHH_accepted == mm_entrySHH_accepted)
     print("dla róznych obiektów, z tym samym numerem PID")
-    print(entrySSH_other==entrySSH_accepted)
+    print(entrySSH_other == entrySSH_accepted)
     print("dla róznych obiektów, z innym numerem PID")
-    print(entrySSH_other==entrySSH_error)
+    print(entrySSH_other == entrySSH_error)
     print("__gt__:")
     mm_other_1 = Other(firstLine)
     mm_other_2 = Other(fourthLine)
-    print(mm_other_1>mm_other_2)
+    print(mm_other_1 > mm_other_2)
     print("__lt__:")
-    print(mm_other_1<mm_other_2)
+    print(mm_other_1 < mm_other_2)

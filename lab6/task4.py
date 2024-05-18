@@ -12,7 +12,7 @@ class SSHUser:
         return f"User: {self.username}, last seen: {self.lastSeen}\n"
 
 if __name__ == '__main__':
-    logJournal = createLogsList()
+    logJournal = createLogsList("SSHTEST.log")
     usersAndLogs = []
     for log in logJournal:
         usersAndLogs.append(log)
@@ -21,4 +21,5 @@ if __name__ == '__main__':
     usersAndLogs.append(SSHUser("user1337", datetime.now()))
     print("Testowanie kaczego typowania: (validate() na czwartym indeksie zwroci False, poniewaz nazwa uzytkownika nie przechodzi walidacji)")
     for element in usersAndLogs:
-        print(element.validate())
+        if isinstance(element, SSHUser):
+            print(str(element.validate())+" "+element.username)

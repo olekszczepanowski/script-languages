@@ -1,19 +1,21 @@
+import ipaddress
 import re
-from lab6.task2 import FailedPassword, AcceptedPassword, Error, Other
-from lab6.functionalities import readFile, get_ipv4s_from_log
+from task2 import FailedPassword, AcceptedPassword, Error, Other
+from functionalities import readFile, get_ipv4s_from_log
 from ipaddress import IPv4Address
 from datetime import datetime
-from lab6.task1 import SSHLogEntry
+from task1 import SSHLogEntry
+from typing import List, Iterator, Union, Optional, Dict
 
 
 class SSHLogJournal:
-    def __init__(self):
-        self.logsList = []
-        self.ipDict = {}
-        self.dateDict = {}
+    def __init__(self) -> None:
+        self.logsList: List[SSHLogEntry] = []
+        self.ipDict: Dict[str, List[SSHLogEntry]] = {}
+        self.dateDict: Dict[datetime, List[SSHLogEntry]] = {}
 
     @staticmethod
-    def validateLogType(log):
+    def validateLogType(log: str) -> SSHLogEntry:
         if re.search(r"Accepted password for", log):
             return AcceptedPassword(log)
         elif re.search(r"Failed password for", log):
@@ -23,49 +25,49 @@ class SSHLogJournal:
         else:
             return Other(log)
 
-    def appendDateDict(self, log):
+    def appendDateDict(self, log: SSHLogEntry):
         if log.date in self.dateDict:
             self.dateDict[log.date].append(log)
         else:
             self.dateDict[log.date] = [log]
 
-    def appendIpDict(self, log):
-        ips = get_ipv4s_from_log(log.description)
+    def appendIpDict(self, log: SSHLogEntry):
+        ips: list[str] = get_ipv4s_from_log(log.description)
         for ip in ips:
             if ip in self.ipDict:
                 self.ipDict[ip].append(log)
             else:
                 self.ipDict[ip] = [log]
 
-    def appendEntry(self, entry):
-        logObject = self.validateLogType(entry)
+    def appendEntry(self, entry: str):
+        logObject: SSHLogEntry = self.validateLogType(entry)
         if logObject.validate():
             self.logsList.append(logObject)
             self.appendDateDict(logObject)
             self.appendIpDict(logObject)
         else:
-            entryOther = Other(entry)
-            self.logsList = (entryOther)
+            entryOther: Other = Other(entry)
+            self.logsList.append(entryOther)
             self.appendDateDict(entryOther)
             self.appendIpDict(entryOther)
 
-    def __len__(self):
+    def __len__(self) -> int:
         return len(self.logsList)
 
-    def __contains__(self, item):
+    def __contains__(self, item: SSHLogEntry) -> bool:
         if not isinstance(item, SSHLogEntry):
             return False
-        strItem = str(item)
+        strItem: str = str(item)
         for log in self.logsList:
             if str(log) == strItem:
                 return True
 
         return False
 
-    def __iter__(self):
+    def __iter__(self) -> Iterator[SSHLogEntry]:
         return iter(self.logsList)
 
-    def __getattr__(self, key):
+    def get_log_by_key(self, key: Union[int, ipaddress.IPv4Address, datetime]) -> Optional[Union[SSHLogEntry, List[SSHLogEntry]]]:
         if isinstance(key, int):
             return self.logsList[key]
         elif isinstance(key, IPv4Address):
@@ -75,53 +77,49 @@ class SSHLogJournal:
         else:
             raise KeyError("Nieprawidlowy klucz.")
 
-    def getLogsWithGivenIp(self, searchedIP):
-        strIP = str(searchedIP)
-        ipAddress = IPv4Address(strIP)
-        return self.__getattr__(ipAddress)
+    def getLogsWithGivenIp(self, searchedIP: ipaddress.IPv4Address) -> Union[SSHLogEntry | list[SSHLogEntry] | None]:
+        strIP: str = str(searchedIP)
+        ipAddress: ipaddress.IPv4Address = IPv4Address(strIP)
+        return self.get_log_by_key(ipAddress)
 
 
-def createLogsList(path):
-    logJournal = SSHLogJournal()
-    logs = readFile(path)
+def createLogsList(path: str) -> SSHLogJournal:
+    logJournal: SSHLogJournal = SSHLogJournal()
+    logs: Iterator[str] = readFile(path)
     for log in logs:
         logJournal.appendEntry(log)
 
     return logJournal
 
 
-
-
-
-if __name__ == '__main__':
-    logJournal = createLogsList("SSHTEST.log")
-    print(logJournal.logsList)
-    print(logJournal.logsList.getRawEntry())
-    # logs = readFile("SSHTEST.log")
-    # ipAddress = IPv4Address('113.118.187.34')
-    # otherIpAddress = IPv4Address('183.62.140.253')
-    # date = datetime(2023, 12, 10, 11, 40, 46)
-    # print("Len test:")
-    # print(len(logJournal))
-    # print("Contains test:")
-    # print("Test dla obiektu AcceptedPassword: ")
-    # firstLine = next(logs)
-    # test = AcceptedPassword(firstLine)
-    # print(test in logJournal)
-    # print("Test dla stringa nieznajdującego się w logJournal:")
-    # print("lalalal" in logJournal)
-    #
-    # print("getLogsWithGivenIP: ")
-    # logsWithGivenIP = logJournal.getLogsWithGivenIp(ipAddress)
-    # print(logsWithGivenIP)
-    #
-    # print("Iterator:")
-    # for log in logJournal:
-    #     print(log)
-    #
-    # print("__getattr__ dla indexu:")
-    # print(logJournal.__getattr__(2))
-    # print("__getattr__ dla adresu ip:")
-    # print(logJournal.__getattr__(otherIpAddress))
-    # print("__getaddr__ dla daty:")
-    # print(logJournal.__getattr__(date))
+# if __name__ == '__main__':
+#     logJournal = createLogsList("SSHTEST.log")
+#     print(logJournal.logsList)
+#     logs = readFile("SSHTEST.log")
+#     ipAddress = IPv4Address('113.118.187.34')
+#     otherIpAddress = IPv4Address('183.62.140.253')
+#     date = datetime(2023, 12, 10, 11, 40, 46)
+#     print("Len test:")
+#     print(len(logJournal))
+#     print("Contains test:")
+#     print("Test dla obiektu AcceptedPassword: ")
+#     firstLine = next(logs)
+#     test = AcceptedPassword(firstLine)
+#     print(test in logJournal)
+#     print("Test dla stringa nieznajdującego się w logJournal:")
+#     print("lalalal" in logJournal)
+#
+#     print("getLogsWithGivenIP: ")
+#     logsWithGivenIP = logJournal.getLogsWithGivenIp(ipAddress)
+#     print(logsWithGivenIP)
+#
+#     print("Iterator:")
+#     for log in logJournal:
+#         print(log)
+#
+#     print("__getattr__ dla indexu:")
+#     print(logJournal.get_log_by_key(2))
+#     print("__getattr__ dla adresu ip:")
+#     print(logJournal.get_log_by_key(otherIpAddress))
+#     print("__getaddr__ dla daty:")
+#     print(logJournal.get_log_by_key(date))

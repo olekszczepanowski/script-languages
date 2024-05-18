@@ -48,6 +48,8 @@ def restore_backup(selected_backup_index):
         with open(backup_history_path, "w", newline='') as history_file:
             writer = csv.writer(history_file)
             writer.writerows(backups)
+        
+        os.remove(zip_file)
     except :
         print("Błąd podczas przywracania kopii zapasowej.")
 
