@@ -45,7 +45,7 @@ if __name__ == "__main__":
     print(test2_2)
     # test zad3
     print("Test funkcji z podpunktu 3:")
-    print(newtonSqrt(36))
+    print(newtonSqrt(36,-9))
     print(newtonSqrt(0.5))
     print(newtonSqrt(9))
     # test zad4

@@ -5,6 +5,8 @@ def forall(pred, iterable):
             retValue = False
     return retValue
 
+def forall_func(pred, iterable):
+    return all(map(pred, iterable))
 
 def exists(pred, iterable):
     retValue = False
@@ -20,6 +22,10 @@ def atleast(n, pred, iterable):
         if pred(item):
             count += 1
     return count >= n
+
+def atleast_func(n, pred, iterable):
+    return sum(1 for item in iterable if pred(item)) >= n
+
 
 
 def atmost(n, pred, iterable):
@@ -41,6 +47,9 @@ if __name__ == '__main__':
     print(forall(unaryFunc, testList1))
     print(atmost(2, unaryFunc, testList1))
     print(atleast(2, unaryFunc, testList1))
+    print("zmienione metody:")
+    print(forall_func(unaryFunc, testList1))
+    print(atleast_func(2, unaryFunc, testList1))
     print("Testy dla listy 2:")
     print(exists(unaryFunc, testList2))
     print(forall(unaryFunc, testList2))
